@@ -21,6 +21,7 @@ typedef struct{
 
 	//Looks for the matching key inside the map_t
 	entry_t* (*getValue)(char *key);
+	//Adds an entry_t to the map_t
 	entry_t* (*add)(entry_t *entry);
 } map_t;
 
