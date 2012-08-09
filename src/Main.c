@@ -11,20 +11,30 @@
 #include "tools/libs/webserverlibrary.h"
 #include "tools/tools.h"
 
-char* CONFIG_FILE_PATH = "C:/Users/ivan/workspace/webserver/resources/WSconfig.txt";
+char *CONFIG_FILE_PATH = "/home/dev/workspace/webserver/resources/WSconfig.txt";
 
 int main(int argc, char **argv) {
 
-	map_t initList;
+	map_t *initList = newMap();
 
-	readConfigFile(CONFIG_FILE_PATH, initList);
+	readFilePerLine(CONFIG_FILE_PATH, initList);
+
+	entry_t *en = newEntry("wow", "wowVal");
+	initList->add(en);
 
 	int i;
-	for (i = 0; i < 10; ++i) {
-		puts(initList[i].key);
-		puts(initList[i].value);
+	for (i = 0; i < initList->size; ++i) {
+		printf("Entry: %d\n", i);
+		printf("key: %s\n", initList->entries[i].key);
+		printf("value: %s\n", initList->entries[i].value);
+		puts("");
 	}
 
+
+	entry_t *found = initList->getValue("");
+
+	puts(found->key);
+	puts(found->value);
 
 	return EXIT_SUCCESS;
 }

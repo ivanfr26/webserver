@@ -10,7 +10,7 @@
 
 #include "libs/webserverlibrary.h"
 
-int readConfigFile(char *file, map_t buffer);
+int readFilePerLine(char *file, map_t *buffer);
 
 
 #endif /* FILEPARSER_H_ */

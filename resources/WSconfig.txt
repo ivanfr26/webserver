@@ -1,2 +1,2 @@
-homasdsae=C:/Users/ivan/workspace/webserver/resources/index.html
-user=C:/Users/ivan/workspace/webserver/resources/user.html
+myKey1=asasC:/Users/ivan/workspace/webserver/resources/index.html
+C:/Users/ivan/workspace/webserver/resources/user.html
