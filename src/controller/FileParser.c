@@ -19,7 +19,7 @@ int setValue(entry_t *value, char *line, int keylen);
  * splits the line into key:value into the map.
  * Otherwise 'key=\0' and the line goes to 'value'.
  */
-int readFilePerLine(char *file, map_t *buffer) {
+int readTextFile(char *file, map_t *buffer) {
 	FILE *fp;
 	char line[VALUE_MAX_SIZE];
 
@@ -37,7 +37,36 @@ int readFilePerLine(char *file, map_t *buffer) {
 
 	buffer->size = lines;
 
+	fclose(fp);
+
 	return lines;
+}
+
+/**
+ * Reads a FILE as binary data
+ */
+bytelist_t* readBinaryFile(char *name) {
+	FILE *file;
+	fsize_t fsize;
+
+	//Open file
+	file = fopen(name, "rb");
+	if (!file) {
+		fprintf(stderr, "Unable to open file %s", name);
+	}
+
+	//Get file length
+	fseek(file, 0, SEEK_END);
+	fsize = ftell(file);
+	fseek(file, 0, SEEK_SET);
+
+	//Read file contents into buffer
+	bytelist_t *buffer = newBytelist(fsize);
+	fread(buffer->list, fsize, 1, file);
+
+	fclose(file);
+
+	return buffer;
 }
 
 /**

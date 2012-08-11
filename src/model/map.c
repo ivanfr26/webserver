@@ -13,7 +13,11 @@
 
 map_t *map;
 
-entry_t* add(entry_t *entry){
+/*
+ * Adds a new entry_t to the map.
+ * Returns the index of that entry_t.
+ */
+int addEntry(entry_t *entry){
 	int index = map->size;
 
 	strcpy(map->entries[index].key, entry->key);
@@ -21,7 +25,7 @@ entry_t* add(entry_t *entry){
 
 	map->size = index + 1;
 
-	return &map->entries[index];
+	return index;
 }
 
 entry_t* getValue(char *key) {
@@ -59,7 +63,7 @@ entry_t* newEntry(char *key, char *value) {
 map_t* newMap() {
 	map = malloc(sizeof(*map));
 	map->getValue = getValue;
-	map->add = add;
+	map->addEntry = addEntry;
 
 	return map;
 }
