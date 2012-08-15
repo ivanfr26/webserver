@@ -15,17 +15,17 @@
 #define CONFIG_FILE_PATH "C:/Users/ivan/git/webserver/resources/WSconfig.txt"
 //char *CONFIG_FILE_PATH = "/home/dev/workspace/webserver/resources/WSconfig.txt";
 
-void testReadTextFile(void);
 void testBytelist(void);
 void testReadBinary(void);
 
 int main(int argc, char **argv) {
 
-//	testReadTextFile();
+	map_t *configFile = readTextFile(CONFIG_FILE_PATH);
+
+	printf("%s", configFile->entries[0].value);
+
 //	testBytelist();
-
 	testReadBinary();
-
 
 	return EXIT_SUCCESS;
 }
@@ -58,25 +58,3 @@ void testBytelist(){
 	}
 }
 
-void testReadTextFile(){
-	map_t *initList = newMap();
-
-	readTextFile(CONFIG_FILE_PATH, initList);
-
-	entry_t *en = newEntry("wow", "wowVal");
-	initList->addEntry(en);
-
-	int i;
-	for (i = 0; i < initList->size; ++i) {
-		printf("Entry: %d\n", i);
-		printf("key: %s\n", initList->entries[i].key);
-		printf("value: %s\n", initList->entries[i].value);
-		puts("");
-	}
-
-
-	entry_t *found = initList->getValue("");
-
-	puts(found->key);
-	puts(found->value);
-}

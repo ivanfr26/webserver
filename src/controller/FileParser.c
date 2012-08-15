@@ -19,10 +19,12 @@ int setValue(entry_t *value, char *line, int keylen);
  * splits the line into key:value into the map.
  * Otherwise 'key=\0' and the line goes to 'value'.
  */
-int readTextFile(char *file, map_t *buffer) {
+map_t* readTextFile(char *file) {
 	FILE *fp;
 	char line[VALUE_MAX_SIZE];
+	map_t *buffer;
 
+	buffer = newMap();
 	fp = fopen(file, "rt");
 
 	int lines = 0;
@@ -39,7 +41,7 @@ int readTextFile(char *file, map_t *buffer) {
 
 	fclose(fp);
 
-	return lines;
+	return buffer;
 }
 
 /**

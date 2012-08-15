@@ -12,7 +12,7 @@
 #include "../model/map.h"
 #include "../model/bytelist.h"
 
-int readTextFile(char *file, map_t *buffer);
+map_t* readTextFile(char *file);
 bytelist_t* readBinaryFile(char *name);
 
 
