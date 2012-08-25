@@ -12,8 +12,7 @@
 #include "libs/webserverlibrary.h"
 #include  "controller/FileParser.h"
 
-#define CONFIG_FILE_PATH "C:/Users/ivan/git/webserver/resources/WSconfig.txt"
-//char *CONFIG_FILE_PATH = "/home/dev/workspace/webserver/resources/WSconfig.txt";
+char *CONFIG_FILE_PATH = "/home/ivan/git/webserver/resources/WSconfig.txt";
 
 void testBytelist(void);
 void testReadBinary(void);
