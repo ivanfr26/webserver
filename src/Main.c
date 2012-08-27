@@ -10,7 +10,8 @@
 
 #include "libs/syslibs.h"
 #include "libs/webserverlibrary.h"
-#include  "controller/FileParser.h"
+#include "controller/FileParser.h"
+#include "controller/tcp/server/server.h"
 
 char *CONFIG_FILE_PATH = "/home/ivan/git/webserver/resources/WSconfig.txt";
 
@@ -19,12 +20,12 @@ void testReadBinary(void);
 
 int main(int argc, char **argv) {
 
-	map_t *configFile = readTextFile(CONFIG_FILE_PATH);
-
-	printf("%s", configFile->entries[0].value);
+//	map_t *configFile = readTextFile(CONFIG_FILE_PATH);
 
 //	testBytelist();
-	testReadBinary();
+//	testReadBinary()s;
+
+	startServer();
 
 	return EXIT_SUCCESS;
 }
