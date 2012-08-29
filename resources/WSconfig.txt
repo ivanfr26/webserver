@@ -1,2 +1,2 @@
-myKey1=asasC:/Users/ivan/workspace/webserver/resources/index.html
-C:/Users/ivan/workspace/webserver/resources/user.html
+hello=hello how are you?
+good=me too

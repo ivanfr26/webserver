@@ -13,6 +13,9 @@
 #include "controller/FileParser.h"
 #include "controller/tcp/server/server.h"
 
+#define MYPORT 3490    // the port users will be connecting to
+#define BACKLOG 10     // how many pending connections queue will hold
+
 char *CONFIG_FILE_PATH = "/home/ivan/git/webserver/resources/WSconfig.txt";
 
 void testBytelist(void);
@@ -20,12 +23,22 @@ void testReadBinary(void);
 
 int main(int argc, char **argv) {
 
-//	map_t *configFile = readTextFile(CONFIG_FILE_PATH);
+	map_t *configFile = readTextFile(CONFIG_FILE_PATH);
 
 //	testBytelist();
 //	testReadBinary()s;
 
-	startServer();
+	int socketServer; // listen on socketServer
+	int socketClient;  // new connection on socketClient
+
+	socketServer = tcp_socket();
+	tcp_bind(socketServer, MYPORT);
+	tcp_listen(socketServer, BACKLOG);
+
+	while (1) {
+		socketClient = tcp_accept(socketServer);
+		tcp_writeText(socketClient, configFile->getValue('hello'));
+	}
 
 	return EXIT_SUCCESS;
 }
