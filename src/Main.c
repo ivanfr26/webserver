@@ -18,15 +18,7 @@
 
 char *CONFIG_FILE_PATH = "/home/ivan/git/webserver/resources/WSconfig.txt";
 
-void testBytelist(void);
-void testReadBinary(void);
-
 int main(int argc, char **argv) {
-
-	map_t *configFile = readTextFile(CONFIG_FILE_PATH);
-
-//	testBytelist();
-//	testReadBinary()s;
 
 	int socketServer; // listen on socketServer
 	int socketClient;  // new connection on socketClient
@@ -37,37 +29,27 @@ int main(int argc, char **argv) {
 
 	while (1) {
 		socketClient = tcp_accept(socketServer);
-		tcp_writeText(socketClient, configFile->getValue('hello'));
+
+		//fork here to accept multiple connections
+		processClient(socketClient);
 	}
 
 	return EXIT_SUCCESS;
 }
 
 
-void testReadBinary(){
-	bytelist_t *myList = readBinaryFile(CONFIG_FILE_PATH);
+int processClient(int socketClient){
+	map_t *configFile = readConfigFile(CONFIG_FILE_PATH);
 
-	int i;
-	for (i = 0; i < myList->size; ++i) {
-		printf("%c", myList->list[i]);
-	}
+	char request[FILENAME_MAX];
+	tcp_readText(socketClient, request, sizeof(request));
+
+	char *answer = configFile->getValue(request)->value;
+
+	tcp_writeText(socketClient, answer);
+
+	tcp_close(socketClient);
+	return EXIT_SUCCESS;
 }
 
-void testBytelist(){
-	bytelist_t *myList;
-	myList = newBytelist(FILE_MAX_SIZE);
-
-	int max = FILE_MAX_SIZE + 1;
-
-	int i;
-	for (i = 0; i < max; ++i) {
-		myList->addByte((uint_8*)(&i));
-	}
-
-	printf("myList size: %ld\n", myList->size);
-
-	for (i = max - 4; i < max; ++i) {
-		printf("%d: 0x%0x \n", i, myList->list[i]);
-	}
-}
 

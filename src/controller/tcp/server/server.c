@@ -93,31 +93,37 @@ int tcp_accept(int socketServer) {
 /**
  * Sends text to the socketClient
  */
-int tcp_writeText(int socketClient, char *text) {
-	if (send(socketClient, text, strlen(text), 0) == TCP_ERROR) {
+int tcp_writeText(int socket, char *text) {
+	if (send(socket, text, strlen(text), 0) == TCP_ERROR) {
+		printf("[WRITE ERROR] - %s", text);
 		perror("send");
 	}
 
 	return EXIT_SUCCESS;
 }
 
+
 /**
  * Reads text into the char *text parameter
  */
-int tcp_readText(int socket, char *text, int maxTextSize){
-	char buf[maxTextSize];
+int tcp_readText(int socket, char *text, int maxTextSize) {
 	int numbytes;
 
-	numbytes=recv(socket, buf, maxTextSize-1, 0);
+	numbytes = recv(socket, text, maxTextSize - 1, 0);
 
-    if (numbytes == TCP_ERROR) {
-        perror("recv");
-        return EXIT_FAILURE;
-    }
-    buf[numbytes] = '\0';
+	if (numbytes == TCP_ERROR) {
 
-    strcpy(text, buf);
-    return EXIT_SUCCESS;
+		if (errno == EINTR) {
+			tcp_readText(socket, text, maxTextSize);
+			return EXIT_SUCCESS;
+		}
+
+		perror("recv");
+		return EXIT_FAILURE;
+	}
+	text[numbytes] = '\0';
+
+	return EXIT_SUCCESS;
 }
 
 /**

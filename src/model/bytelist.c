@@ -34,3 +34,20 @@ bytelist_t* newBytelist(fsize_t initialSize){
 	return bytelist;
 }
 
+void testBytelist(){
+	bytelist_t *myList;
+	myList = newBytelist(FILE_MAX_SIZE);
+
+	int max = FILE_MAX_SIZE + 1;
+
+	int i;
+	for (i = 0; i < max; ++i) {
+		myList->addByte((uint_8*)(&i));
+	}
+
+	printf("myList size: %ld\n", myList->size);
+
+	for (i = max - 4; i < max; ++i) {
+		printf("%d: 0x%0x \n", i, myList->list[i]);
+	}
+}

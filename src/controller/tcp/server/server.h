@@ -24,6 +24,10 @@ int tcp_writeText(int socket, char *text);
 
 int tcp_readText(int socket, char *text, int maxTextSize);
 
+int processClient(int socketClient);
+
 int tcp_close(int socket);
+
+
 
 

@@ -19,7 +19,7 @@ int setValue(entry_t *value, char *line, int keylen);
  * splits the line into key:value into the map.
  * Otherwise 'key=\0' and the line goes to 'value'.
  */
-map_t* readTextFile(char *file) {
+map_t* readConfigFile(char *file) {
 	FILE *fp;
 	char line[VALUE_MAX_SIZE];
 	map_t *buffer;
@@ -109,4 +109,14 @@ int setValue(entry_t *entry, char *line, int keylen) {
 	entry->value[i] = '\0';
 
 	return i;
+}
+
+
+void testReadBinary(char *config_file_path){
+	bytelist_t *myList = readBinaryFile(config_file_path);
+
+	int i;
+	for (i = 0; i < myList->size; ++i) {
+		printf("%c", myList->list[i]);
+	}
 }
