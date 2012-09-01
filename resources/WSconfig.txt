@@ -1,2 +1,2 @@
-hello=hello how are you?
-good=me too
+index=/home/ivan/git/webserver/html/index.html
+user=/home/ivan/git/webserver/html/user.html

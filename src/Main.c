@@ -44,9 +44,14 @@ int processClient(int socketClient){
 	char request[FILENAME_MAX];
 	tcp_readText(socketClient, request, sizeof(request));
 
-	char *answer = configFile->getValue(request)->value;
+	char buffer[100][500];
+	int lines = readTextFile(configFile->getValue(request)->value, buffer);
 
-	tcp_writeText(socketClient, answer);
+	int i;
+	for (i = 0; i < lines; ++i) {
+		tcp_writeText(socketClient, buffer[i]);
+	}
+
 
 	tcp_close(socketClient);
 	return EXIT_SUCCESS;

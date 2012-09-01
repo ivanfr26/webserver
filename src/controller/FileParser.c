@@ -14,6 +14,32 @@ int setKey(entry_t *entry, char *line);
 int setValue(entry_t *value, char *line, int keylen);
 
 /**
+ * Reads a FILE	line by line.
+ * Returns the number of lines read
+ *
+ */
+int readTextFile(char *file, char buffer[][500]){
+	FILE *fp;
+	char line[VALUE_MAX_SIZE];
+
+	fp = fopen(file, "rt");
+
+	if(fp == NULL){
+		printf("error open file: %s \n", file);
+		return EXIT_FAILURE;
+	}
+
+	int i = 0;
+	while (feof(fp) == false) {
+		fgets(line, VALUE_MAX_SIZE, fp);
+		strcpy(buffer[i++], line);
+	}
+
+	fclose(fp);
+	return i;
+}
+
+/**
  * Reads a FILE	line by line and saves it into a map.
  * In case the line has 'key=value' format,
  * splits the line into key:value into the map.

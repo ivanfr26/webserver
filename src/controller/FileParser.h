@@ -14,6 +14,7 @@
 
 map_t* readConfigFile(char *file);
 bytelist_t* readBinaryFile(char *name);
+int readTextFile(char *file, char buffer[][500]);
 
 
 #endif /* FILEPARSER_H_ */
