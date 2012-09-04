@@ -6,7 +6,7 @@
  *      Author: ivan
  */
 
-#include "server.h"
+#include "connectionController.h"
 
 #include <stdio.h>
 #include <stdlib.h>

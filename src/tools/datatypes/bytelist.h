@@ -8,7 +8,7 @@
 #ifndef BYTELIST_H_
 #define BYTELIST_H_
 
-#include "../libs/webserverlibrary.h"
+#include "../../libs/syslibs.h"
 
 //In bytes, 100Kb
 #define FILE_MAX_SIZE 102400

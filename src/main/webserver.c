@@ -8,10 +8,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "libs/syslibs.h"
-#include "libs/webserverlibrary.h"
-#include "controller/FileParser.h"
-#include "controller/tcp/server/server.h"
+#include "../libs/syslibs.h"
+#include "../libs/webserverlibrary.h"
+#include "../tools/FileParser.h"
+#include "controller/tcp/connectionController.h"
 
 #define MYPORT 3490    // the port users will be connecting to
 #define BACKLOG 10     // how many pending connections queue will hold

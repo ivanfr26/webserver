@@ -8,9 +8,9 @@
 #ifndef FILEPARSER_H_y
 #define FILEPARSER_H_
 
-#include "../libs/syslibs.h"
-#include "../model/map.h"
-#include "../model/bytelist.h"
+#include "../libs/webserverlibrary.h"
+#include "../tools/datatypes/map.h"
+#include "../tools/datatypes/bytelist.h"
 
 map_t* readConfigFile(char *file);
 bytelist_t* readBinaryFile(char *name);
