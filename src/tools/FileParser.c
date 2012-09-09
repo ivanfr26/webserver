@@ -146,3 +146,30 @@ void testReadBinary(char *config_file_path){
 		printf("%c", myList->list[i]);
 	}
 }
+
+
+char* strcat_t(char *str1, char *str2){
+	char *new;
+
+	int str1len = strlen(str1);
+	int str2len = strlen(str1);
+
+	new = malloc(str1len + str2len + 1);
+
+	int i;
+	for (i = 0; i < str1len; ++i) {
+		new[i] = str1[i];
+	}
+
+	for (i = 0; i < str2len; ++i) {
+		new[i + str1len] = str2[i];
+	}
+
+	new[str1len + str2len] = '\0';
+
+	return new;
+}
+
+
+
+

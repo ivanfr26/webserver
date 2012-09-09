@@ -1,0 +1,10 @@
+HTTP/1.0 302 Found
+Location: <location>
+Cache-Control: private
+Content-Type: text/html; charset=UTF-8
+P3P: CP="This is not a P3P policy!"
+Date: <Wed, 29 Aug 2012 23:23:19 GMT>
+Server: gws
+Content-Length:
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
