@@ -13,12 +13,14 @@
 #include "../tools/FileParser.h"
 #include "controller/tcp/connectionController.h"
 
-#define MYPORT 3490    // the port users will be connecting to
+#define MYPORT 8080    // the port users will be connecting to
 #define BACKLOG 10     // how many pending connections queue will hold
 
 char *HTML_PATH = "/home/ivan/git/webserver/html";
 char *HTTP_HEADER_PATH = "/home/ivan/git/webserver/resources/HTTP_Protocol.txt";
 char *CONFIG_FILE_PATH = "/home/ivan/git/webserver/resources/WSconfig.txt";
+
+map_t *configFile;
 
 int main(int argc, char **argv) {
 
@@ -28,6 +30,8 @@ int main(int argc, char **argv) {
 	socketServer = tcp_socket();
 	tcp_bind(socketServer, MYPORT);
 	tcp_listen(socketServer, BACKLOG);
+
+	configFile = readConfigFile(CONFIG_FILE_PATH);
 
 	while (1) {
 		socketClient = tcp_accept(socketServer);
@@ -39,38 +43,52 @@ int main(int argc, char **argv) {
 	return EXIT_SUCCESS;
 }
 
-
-int processClient(int socketClient){
-	map_t *configFile = readConfigFile(CONFIG_FILE_PATH);
-
+char* getRequest(int socketClient) {
 	char request[FILENAME_MAX];
 	tcp_readText(socketClient, request, sizeof(request));
 
-	char buffer[100][500];
-	int lines = readTextFile(strcat_t(HTML_PATH, configFile->getValue(request)->value), buffer);
+	int PREFIX = 5; //"GET /"
 
-	int len = 0;
-	int i;
+	int i = 0;
+	char c = '\0';
 
-	for (i = 0; i < lines; ++i) {
-		len = len + strlen(buffer[i]);
+	char *page = malloc(200);
+	page[0] = '\0';
+
+	while(c != ' '){
+		c = request[PREFIX + i];
+		page[i] = c;
+
+		i++;
+	}
+	page[i-1] = '\0';
+
+	return page;
+}
+
+int processClient(int socketClient){
+	char *request = getRequest(socketClient);
+	char* file = readTextFile(configFile->getValue(request)->value);
+
+	char* textToSend;
+
+	if(file != NULL){
+
+		printf("[REQUEST] \"%s\"\n", request);
+		textToSend = appendHeader(file);
+
+	}else{
+
+		printf("[NOT FOUND] \"%s\"\n", request);
+		textToSend = appendHeader("Something went terribly wrong.");
+
 	}
 
-	char str[15];
-	sprintf(str, "%d", len);
+	tcp_writeText(socketClient, textToSend);
 
-	char header[10][500];
-	readTextFile(HTTP_HEADER_PATH, header);
-
-	strcpy(header[7], strcat_t("Content-Length: ", str));
-
-	for (i = 0; i < 10; ++i) {
-		tcp_writeText(socketClient, header[i]);
-	}
-
-	for (i = 0; i < lines; ++i) {
-		tcp_writeText(socketClient, buffer[i]);
-	}
+	free(file);
+	free(request);
+	free(textToSend);
 
 	tcp_close(socketClient);
 	return EXIT_SUCCESS;

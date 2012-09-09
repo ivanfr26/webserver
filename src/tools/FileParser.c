@@ -18,25 +18,30 @@ int setValue(entry_t *value, char *line, int keylen);
  * Returns the number of lines read
  *
  */
-int readTextFile(char *file, char buffer[][500]){
+char* readTextFile(char *file){
 	FILE *fp;
 	char line[VALUE_MAX_SIZE];
 
 	fp = fopen(file, "rt");
 
 	if(fp == NULL){
-		printf("error open file: %s \n", file);
-		return EXIT_FAILURE;
+		return NULL;
 	}
 
-	int i = 0;
+	int textFileLen = getTextFileLen(fp);
+	char *allText = malloc(textFileLen + 1);
+	allText[0] = '\0';
+
 	while (feof(fp) == false) {
 		fgets(line, VALUE_MAX_SIZE, fp);
-		strcpy(buffer[i++], line);
+		strcat(allText, line);
 	}
 
+	allText[textFileLen] = '\0';
+
 	fclose(fp);
-	return i;
+
+	return allText;
 }
 
 /**
@@ -68,6 +73,15 @@ map_t* readConfigFile(char *file) {
 	fclose(fp);
 
 	return buffer;
+}
+
+int getTextFileLen(FILE* f) {
+
+	fseek(f, 0, SEEK_END); // seek to end of file
+	int size = ftell(f); // get current file pointer
+	fseek(f, 0, SEEK_SET); // seek back to beginning of file
+
+	return size;
 }
 
 /**

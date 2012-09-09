@@ -12,22 +12,21 @@
 
 #endif /* SERVER_H_ */
 
+//TCP functions encapsulation
 int tcp_socket(void);
-
 int tcp_bind(int socket, short int port);
-
 int tcp_listen(int socket, int backlog);
-
 int tcp_accept(int socketServer);
-
 int tcp_writeText(int socket, char *text);
-
 int tcp_readText(int socket, char *text, int maxTextSize);
-
-int processClient(int socketClient);
-
 int tcp_close(int socket);
 
+
+//WEBSERVER SPECIF FUNCTIONS
+int processClient(int socketClient);
+char* parseInt(char* textToSend);
+char* appendHeader(char *textToSend);
+char* appendHeaderFileNotFound(char *textToSend);
 
 
 

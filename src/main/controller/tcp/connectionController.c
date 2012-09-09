@@ -82,10 +82,13 @@ int tcp_accept(int socketServer) {
 	int socketClient;
 
 	sin_size = sizeof(struct sockaddr_in);
-	if ((socketClient = accept(socketServer, (struct sockaddr *) &their_addr, &sin_size)) == TCP_ERROR) {
+	socketClient = accept(socketServer,
+						 (struct sockaddr *) &their_addr,
+						 (socklen_t *)&sin_size);
+
+	if (socketClient == TCP_ERROR) {
 		perror("accept");
 	}
-	printf("server: got connection from %s\n", inet_ntoa(their_addr.sin_addr));
 
 	return socketClient;
 }
@@ -133,4 +136,44 @@ int tcp_close(int socket){
 	close(socket);
 
 	return EXIT_SUCCESS;
+}
+
+
+char* appendHeader(char *textToSend) {
+	char* msglen = parseInt(textToSend);
+
+	char* header1 = "HTTP/1.0 302 Found\n"
+					"Location:\n"
+					"Cache-Control: private\n"
+					"Content-Type: text/html; charset=UTF-8\n"
+					"P3P: CP=\"This is not a P3P policy!\"\n"
+					"Date: Wed, 29 Aug 2012 23:23:19 GMT\n"
+					"Server: gws\n"
+					"Content-Length: ";
+
+	char* header2 = "\nX-XSS-Protection: 1; mode=block\n"
+					"X-Frame-Options: SAMEORIGIN\n"
+					"\n";
+
+	char* allText = malloc(strlen(header1) + strlen(header2) + strlen(msglen) + strlen(textToSend) + 1);
+	allText[0] = '\0';
+
+	allText = strcat(allText, header1);
+	allText = strcat(allText, msglen);
+	allText = strcat(allText, header2);
+	allText = strcat(allText, textToSend);
+
+	free(msglen);
+
+	return allText;
+}
+
+
+char* parseInt(char* textToSend) {
+	int len = strlen(textToSend);
+
+	char* msglen = malloc(15);
+	sprintf(msglen, "%d", len);
+
+	return msglen;
 }

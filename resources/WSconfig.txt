@@ -1,2 +1,2 @@
-index=/index.html
-user=/user.html
+index=/home/ivan/git/webserver/html/index.html
+user=/home/ivan/git/webserver/html/user.html
