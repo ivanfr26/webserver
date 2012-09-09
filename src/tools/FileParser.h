@@ -17,6 +17,6 @@ bytelist_t* readBinaryFile(char *name);
 
 char* readTextFile(char *file);
 char* strcat_t(char *str1, char *str2);
-int getTextFileLen(FILE* f);
+int getFileSize(FILE* f);
 
 #endif /* FILEPARSER_H_ */

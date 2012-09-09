@@ -28,7 +28,7 @@ char* readTextFile(char *file){
 		return NULL;
 	}
 
-	int textFileLen = getTextFileLen(fp);
+	int textFileLen = getFileSize(fp);
 	char *allText = malloc(textFileLen + 1);
 	allText[0] = '\0';
 
@@ -75,7 +75,7 @@ map_t* readConfigFile(char *file) {
 	return buffer;
 }
 
-int getTextFileLen(FILE* f) {
+int getFileSize(FILE* f) {
 
 	fseek(f, 0, SEEK_END); // seek to end of file
 	int size = ftell(f); // get current file pointer
@@ -97,10 +97,7 @@ bytelist_t* readBinaryFile(char *name) {
 		fprintf(stderr, "Unable to open file %s", name);
 	}
 
-	//Get file length
-	fseek(file, 0, SEEK_END);
-	fsize = ftell(file);
-	fseek(file, 0, SEEK_SET);
+	fsize = getFileSize(file);;
 
 	//Read file contents into buffer
 	bytelist_t *buffer = newBytelist(fsize);

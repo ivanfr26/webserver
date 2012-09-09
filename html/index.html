@@ -1,5 +1,9 @@
 <HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
 <TITLE>WebServer</TITLE></HEAD><BODY>
 <H1>Welocme!</H1>
-Wanna <A HREF="http://www.google.com.ar/">google</A> some?
+<p>Note that we would only get to this point after a client has successfully connected to our server. 
+This code initializes the buffer using the bzero() function, and then reads from the socket. Note that 
+the read call uses the new file descriptor, the one returned by accept(), not the original file
+descriptor returned by socket(). Note also that the read() will block until there is something for 
+it to read in the socket, i.e. after the client has executed a write().</p>
 </BODY></HTML>
