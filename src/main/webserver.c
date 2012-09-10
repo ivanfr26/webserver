@@ -11,14 +11,15 @@
 #include "../libs/syslibs.h"
 #include "../libs/webserverlibrary.h"
 #include "../tools/FileParser.h"
+#include "../tools/datatypes/bytelist.h"
 #include "controller/tcp/connectionController.h"
 
 #define MYPORT 8080    // the port users will be connecting to
 #define BACKLOG 10     // how many pending connections queue will hold
 
-char *HTML_PATH = "/home/ivan/git/webserver/html";
-char *HTTP_HEADER_PATH = "/home/ivan/git/webserver/resources/HTTP_Protocol.txt";
-char *CONFIG_FILE_PATH = "/home/ivan/git/webserver/resources/WSconfig.txt";
+char *HTML_PATH = "/home/dev/git/webserver/html";
+char *HTTP_HEADER_PATH = "/home/dev/git/webserver/resources/HTTP_Protocol.txt";
+char *CONFIG_FILE_PATH = "/home/dev/git/webserver/resources/WSconfig.txt";
 
 map_t *configFile;
 
@@ -32,6 +33,8 @@ int main(int argc, char **argv) {
 	tcp_listen(socketServer, BACKLOG);
 
 	configFile = readConfigFile(CONFIG_FILE_PATH);
+
+	puts("[WEBSERVER] Started");
 
 	while (1) {
 		socketClient = tcp_accept(socketServer);
@@ -66,29 +69,49 @@ char* getRequest(int socketClient) {
 	return page;
 }
 
-int processClient(int socketClient){
-	char *request = getRequest(socketClient);
-	char* file = readTextFile(configFile->getValue(request)->value);
-
-	char* textToSend;
-
-	if(file != NULL){
+void sendTextFile(char *request, int socketClient)
+{
+    char *file = readTextFile(configFile->getValue(request)->value);
+    char *textToSend;
+    if(file != NULL){
 
 		printf("[REQUEST] \"%s\"\n", request);
-		textToSend = appendHeader(file);
+		textToSend = appendTextHeader(file);
 
 	}else{
 
 		printf("[NOT FOUND] \"%s\"\n", request);
-		textToSend = appendHeader("Something went terribly wrong.");
+		textToSend = appendTextHeader("<p>sorry dude, l'page not found.</p>");
+
+	}
+    tcp_writeText(socketClient, textToSend);
+    free(file);
+    free(textToSend);
+}
+
+#include <sys/socket.h>
+
+int processClient(int socketClient){
+	char *request = getRequest(socketClient);
+
+	if(strstr(request, "image")){
+		bytelist_t *img = readBinaryFile(configFile->getValue(request)->value);
+
+		printf("[REQUEST IMAGE] \"%s\" size: %d\n", request, (int)img->size);
+
+		tcp_writeText(socketClient, getImageHeader(img->size));
+
+		if (send(socketClient, img->list, img->size, 0) == TCP_ERROR) {
+			perror("send");
+		}
+
+	}else{
+
+		sendTextFile(request, socketClient);
 
 	}
 
-	tcp_writeText(socketClient, textToSend);
-
-	free(file);
 	free(request);
-	free(textToSend);
 
 	tcp_close(socketClient);
 	return EXIT_SUCCESS;

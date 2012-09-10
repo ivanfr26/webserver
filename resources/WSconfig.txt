@@ -1,2 +1,3 @@
-index=/home/ivan/git/webserver/html/index.html
-user=/home/ivan/git/webserver/html/user.html
+index=/home/dev/git/webserver/html/index.html
+user=/home/dev/git/webserver/html/user.html
+image=/home/dev/git/webserver/html/image.jpg

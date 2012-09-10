@@ -105,7 +105,6 @@ int tcp_writeText(int socket, char *text) {
 	return EXIT_SUCCESS;
 }
 
-
 /**
  * Reads text into the char *text parameter
  */
@@ -139,8 +138,37 @@ int tcp_close(int socket){
 }
 
 
-char* appendHeader(char *textToSend) {
-	char* msglen = parseInt(textToSend);
+char* getImageHeader(int size){
+	char* msglen = parseInt(size);
+
+	char* header1 = "HTTP/1.0 302 Found\n"
+					"Location:\n"
+					"Cache-Control: private\n"
+					"Content-Type: image/jpg;\n"
+					"P3P: CP=\"This is not a P3P policy!\"\n"
+					"Date: Wed, 29 Aug 2012 23:23:19 GMT\n"
+					"Server: gws\n"
+					"Content-Length: ";
+
+	char* header2 = "\nX-XSS-Protection: 1; mode=block\n"
+					"X-Frame-Options: SAMEORIGIN\n"
+					"\n";
+
+	char* allText = malloc(strlen(header1) + strlen(header2) + strlen(msglen) + 1);
+	allText[0] = '\0';
+
+	allText = strcat(allText, header1);
+	allText = strcat(allText, msglen);
+	allText = strcat(allText, header2);
+
+	free(msglen);
+
+	return allText;
+}
+
+char* appendTextHeader(char *textToSend) {
+	int len = strlen(textToSend);
+	char* msglen = parseInt(len);
 
 	char* header1 = "HTTP/1.0 302 Found\n"
 					"Location:\n"
@@ -155,7 +183,7 @@ char* appendHeader(char *textToSend) {
 					"X-Frame-Options: SAMEORIGIN\n"
 					"\n";
 
-	char* allText = malloc(strlen(header1) + strlen(header2) + strlen(msglen) + strlen(textToSend) + 1);
+	char* allText = malloc(strlen(header1) + strlen(header2) + strlen(msglen) + len + 1);
 	allText[0] = '\0';
 
 	allText = strcat(allText, header1);
@@ -169,11 +197,9 @@ char* appendHeader(char *textToSend) {
 }
 
 
-char* parseInt(char* textToSend) {
-	int len = strlen(textToSend);
+char* parseInt(int i) {
+	char* str = malloc(15);
+	sprintf(str, "%d", i);
 
-	char* msglen = malloc(15);
-	sprintf(msglen, "%d", len);
-
-	return msglen;
+	return str;
 }

@@ -24,9 +24,10 @@ int tcp_close(int socket);
 
 //WEBSERVER SPECIF FUNCTIONS
 int processClient(int socketClient);
-char* parseInt(char* textToSend);
-char* appendHeader(char *textToSend);
+char* parseInt(int i);
+char* appendTextHeader(char *textToSend);
 char* appendHeaderFileNotFound(char *textToSend);
+char* getImageHeader(int size);
 
 
 
