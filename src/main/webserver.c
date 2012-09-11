@@ -17,9 +17,8 @@
 #define MYPORT 8080    // the port users will be connecting to
 #define BACKLOG 10     // how many pending connections queue will hold
 
-char *HTML_PATH = "/home/dev/git/webserver/html";
-char *HTTP_HEADER_PATH = "/home/dev/git/webserver/resources/HTTP_Protocol.txt";
-char *CONFIG_FILE_PATH = "/home/dev/git/webserver/resources/WSconfig.txt";
+char *HTTP_HEADER_PATH = "/home/ivan/git/webserver/resources/HTTP_Protocol.txt";
+char *CONFIG_FILE_PATH = "/home/ivan/git/webserver/resources/WSconfig.txt";
 
 map_t *configFile;
 
