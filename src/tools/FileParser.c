@@ -94,7 +94,8 @@ bytelist_t* readBinaryFile(char *name) {
 	//Open file
 	file = fopen(name, "rb");
 	if (!file) {
-		fprintf(stderr, "Unable to open file %s", name);
+		fprintf(stderr, "Unable to open file \"%s\" \n", name);
+		return NULL;
 	}
 
 	fsize = getFileSize(file);;

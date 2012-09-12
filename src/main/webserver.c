@@ -16,11 +16,16 @@
 
 #define MYPORT 8080    // the port users will be connecting to
 #define BACKLOG 10     // how many pending connections queue will hold
-
 char *HTTP_HEADER_PATH = "/home/ivan/git/webserver/resources/HTTP_Protocol.txt";
 char *CONFIG_FILE_PATH = "/home/ivan/git/webserver/resources/WSconfig.txt";
 
 map_t *configFile;
+
+enum {
+	text,
+	image,
+	notSuported
+};
 
 int main(int argc, char **argv) {
 
@@ -57,57 +62,84 @@ char* getRequest(int socketClient) {
 	char *page = malloc(200);
 	page[0] = '\0';
 
-	while(c != ' '){
+	while (c != ' ') {
 		c = request[PREFIX + i];
 		page[i] = c;
 
 		i++;
 	}
-	page[i-1] = '\0';
+	page[i - 1] = '\0';
 
 	return page;
 }
 
-void sendTextFile(char *request, int socketClient)
-{
-    char *file = readTextFile(configFile->getValue(request)->value);
-    char *textToSend;
-    if(file != NULL){
+void sendTextFile(char *request, int socketClient) {
+	char *file = readTextFile(configFile->getValue(request)->value);
+	char *textToSend;
+	if (file != NULL ) {
 
 		printf("[REQUEST] \"%s\"\n", request);
 		textToSend = appendTextHeader(file);
 
-	}else{
+	} else {
 
 		printf("[NOT FOUND] \"%s\"\n", request);
 		textToSend = appendTextHeader("<p>sorry dude, l'page not found.</p>");
 
 	}
-    tcp_writeText(socketClient, textToSend);
-    free(file);
-    free(textToSend);
+	tcp_writeText(socketClient, textToSend);
+	free(file);
+	free(textToSend);
 }
 
 #include <sys/socket.h>
 
-int processClient(int socketClient){
+int getRequestType(char* request) {
+	if (strstr(request, ".jpg") != NULL  ||
+		strstr(request, ".jpeg") != NULL ||
+		strstr(request, ".gif") != NULL ||
+		strstr(request, ".bmp") != NULL) {
+		return image;
+	}
+
+	return text;
+}
+
+int sendImageFile(int socketClient, bytelist_t* img, map_t* configFile, char* request) {
+
+	img = readBinaryFile(configFile->getValue(request)->value);
+
+	if(img == NULL){
+		return EXIT_FAILURE;
+	}
+
+	printf("[REQUEST IMAGE] \"%s\" size: %d\n", request, (int) img->size);
+	tcp_writeText(socketClient, getImageHeader(img->size));
+	if (send(socketClient, img->list, img->size, 0) == TCP_ERROR) {
+		perror("send");
+	}
+
+	return EXIT_SUCCESS;
+}
+
+int processClient(int socketClient) {
 	char *request = getRequest(socketClient);
 
-	if(strstr(request, "image")){
-		bytelist_t *img = readBinaryFile(configFile->getValue(request)->value);
+	bytelist_t *img = NULL;
 
-		printf("[REQUEST IMAGE] \"%s\" size: %d\n", request, (int)img->size);
+	switch (getRequestType(request)) {
 
-		tcp_writeText(socketClient, getImageHeader(img->size));
-
-		if (send(socketClient, img->list, img->size, 0) == TCP_ERROR) {
-			perror("send");
-		}
-
-	}else{
-
+	case text:
 		sendTextFile(request, socketClient);
+		break;
 
+	case image:
+		sendImageFile(socketClient, img, configFile, request);
+		break;
+
+	default:
+		printf("File not supported yet: '%s' \n", request);
+		break;
 	}
 
 	free(request);
