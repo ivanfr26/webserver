@@ -122,6 +122,9 @@ int sendImageFile(int socketClient, bytelist_t* img, map_t* configFile, char* re
 	return EXIT_SUCCESS;
 }
 
+/**
+ * Process a clients request and then closes the connection
+ */
 int processClient(int socketClient) {
 	char *request = getRequest(socketClient);
 
@@ -142,6 +145,9 @@ int processClient(int socketClient) {
 		break;
 	}
 
+	if(img != NULL){
+		free(img);
+	}
 	free(request);
 
 	tcp_close(socketClient);
