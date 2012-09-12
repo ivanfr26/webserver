@@ -1,4 +1,2 @@
-index=/home/ivan/git/webserver/html/index.html
-user=/home/ivan/git/webserver/html/user.html
-paint.jpg=/home/ivan/git/webserver/html/paint.jpg
-lake.gif=/home/ivan/git/webserver/html/lake.gif
+PORT=8080
+HTML_PATH=/home/ivan/html

@@ -14,9 +14,12 @@
 #include "../tools/datatypes/bytelist.h"
 #include "controller/tcp/connectionController.h"
 
-#define MYPORT 8080    // the port users will be connecting to
 #define BACKLOG 10     // how many pending connections queue will hold
-char *HTTP_HEADER_PATH = "/home/ivan/git/webserver/resources/HTTP_Protocol.txt";
+
+int PORT_LISTEN;
+char *HTML_PATH;
+size_t htmlPathLen;
+
 char *CONFIG_FILE_PATH = "/home/ivan/git/webserver/resources/WSconfig.txt";
 
 map_t *configFile;
@@ -28,15 +31,20 @@ enum {
 };
 
 int main(int argc, char **argv) {
+	configFile = readConfigFile(CONFIG_FILE_PATH);
+
+	HTML_PATH = configFile->getValue("HTML_PATH")->value;
+	htmlPathLen = strlen(HTML_PATH);
+
+	PORT_LISTEN = 8080;//configFile->getValue("PORT")->value;
 
 	int socketServer; // listen on socketServer
 	int socketClient;  // new connection on socketClient
 
 	socketServer = tcp_socket();
-	tcp_bind(socketServer, MYPORT);
+	tcp_bind(socketServer, PORT_LISTEN);
 	tcp_listen(socketServer, BACKLOG);
 
-	configFile = readConfigFile(CONFIG_FILE_PATH);
 
 	puts("[WEBSERVER] Started");
 
@@ -54,7 +62,7 @@ char* getRequest(int socketClient) {
 	char request[FILENAME_MAX];
 	tcp_readText(socketClient, request, sizeof(request));
 
-	int PREFIX = 5; //"GET /"
+	int PREFIX = 4; //"GET /"
 
 	int i = 0;
 	char c = '\0';
@@ -73,12 +81,21 @@ char* getRequest(int socketClient) {
 	return page;
 }
 
+char* getFilePath(size_t htmlPathLen, char* request, char* HTML_PATH) {
+	char* name = malloc(htmlPathLen + strlen(request) + 1);
+	strcat(name, HTML_PATH);
+	strcat(name, request);
+	return name;
+}
+
 void sendTextFile(char *request, int socketClient) {
-	char *file = readTextFile(configFile->getValue(request)->value);
+	char* name = getFilePath(htmlPathLen, request, HTML_PATH);
+
+	char *file = readTextFile(name);
 	char *textToSend;
 	if (file != NULL ) {
 
-		printf("[REQUEST] \"%s\"\n", request);
+		printf("[REQUEST] \"%s\"\n", name);
 		textToSend = appendTextHeader(file);
 
 	} else {
@@ -106,8 +123,8 @@ int getRequestType(char* request) {
 }
 
 int sendImageFile(int socketClient, bytelist_t* img, map_t* configFile, char* request) {
-
-	img = readBinaryFile(configFile->getValue(request)->value);
+	char* name = getFilePath(htmlPathLen, request, HTML_PATH);
+	img = readBinaryFile(name);
 
 	if(img == NULL){
 		return EXIT_FAILURE;
