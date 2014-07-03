@@ -2,7 +2,7 @@ OS and Networks
 =============
 
 
-WebServer implementation in C language for a college project.
+WebServer implementation in C language.
 
 
 Details
